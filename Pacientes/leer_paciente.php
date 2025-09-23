@@ -22,7 +22,6 @@ if($resultado) {
     ]);
 }
 
-$stmt->close();
 $conexion->close();
 
 ?>

@@ -32,8 +32,8 @@ if (empty($pacienteId) || empty($fecha) || empty($hora) || empty($odontologo) ||
     exit;
 }
 
-$stmt = $conexion->prepare("UPDATE citas SET pacienteId = ?, fecha = ?, hora = ?, odontologo = ?, estado = ? WHERE id = ?");
-$stmt->bind_param("ssssi", $pacienteId, $fecha, $hora, $odontologo, $estado, $id);
+$stmt = $conexion->prepare("UPDATE citas SET paciente_id = ?, fecha = ?, hora = ?, odontologo = ?, estado = ? WHERE id = ?");
+$stmt->bind_param("issssi", $pacienteId, $fecha, $hora, $odontologo, $estado, $id);
 
 if ($stmt->execute()) {
     echo json_encode([
