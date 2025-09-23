@@ -159,7 +159,33 @@ function editarPaciente(id) {
     }
 }
 
+// Función para verificar si un paciente tiene citas
+async function verificarCitasPaciente(pacienteId) {
+    try {
+        const response = await fetch('Citas/leer_cita.php');
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+            // Verificar si existe alguna cita con el ID del paciente
+            return data.some(cita => cita.paciente_id == pacienteId);
+        }
+        return false;
+    } catch (error) {
+        console.error('Error al verificar citas:', error);
+        // En caso de error, mejor prevenir la eliminación
+        return true;
+    }
+}
+
 async function eliminarPaciente(id) {
+    // Verificar si el paciente tiene citas
+    const pacienteTieneCitas = await verificarCitasPaciente(id);
+    
+    if (pacienteTieneCitas) {
+        mostrarAlerta('No se puede eliminar el paciente porque tiene citas asociadas', 'danger');
+        return;
+    }
+    
     if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
         try {
             const response = await fetch('Pacientes/eliminar_paciente.php', {
