@@ -1,6 +1,9 @@
+// Importaciones principales de React y componentes de React Native
 import { useState, useEffect } from "react";
 import { View, Text, FlatList, Alert, Platform, TextInput, ScrollView, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
+
+// Importación de funciones de la API para pacientes y citas
 import {
   obtenerPacientes,
   crearPaciente,
@@ -13,6 +16,7 @@ import {
   cambiarEstadoCita
 } from "../../api";
 
+// Tipos para los datos de pacientes y citas
 interface Paciente {
   id: number;
   nombre: string;
@@ -31,34 +35,44 @@ interface Cita {
 }
 
 export default function HomeScreen() {
+  // ===============================
+  // Estados principales de la pantalla
+  // ===============================
+
+  // Estado para manejar la pestaña activa ("pacientes" o "citas")
   const [pestañaActiva, setPestañaActiva] = useState<'pacientes' | 'citas'>('pacientes');
+
+  // Listas de pacientes y citas
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [citas, setCitas] = useState<Cita[]>([]);
-  const [cargando, setCargando] = useState(false);
+  const [cargando, setCargando] = useState(false); // Indica si se están cargando datos
 
-  // Estados para edición
+  // Estados para edición de registros
   const [editandoPaciente, setEditandoPaciente] = useState<Paciente | null>(null);
   const [editandoCita, setEditandoCita] = useState<Cita | null>(null);
 
-  // Estados para mostrar formularios
+  // Estados para mostrar/ocultar formularios
   const [mostrarFormularioPaciente, setMostrarFormularioPaciente] = useState(false);
   const [mostrarFormularioCita, setMostrarFormularioCita] = useState(false);
 
-  // Estados para el selector de fecha
+  // ===============================
+  // Estados para selección de fecha y hora
+  // ===============================
   const [mostrarDatePicker, setMostrarDatePicker] = useState(false);
   const [mostrarTimePicker, setMostrarTimePicker] = useState(false);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
+  // modoDatePicker indica si el selector es para nueva cita o edición
   const [modoDatePicker, setModoDatePicker] = useState<'nueva' | 'editar'>('nueva');
 
-  // Estados para el selector de odontólogos
+  // ===============================
+  // Estados para selectores de odontólogo y paciente
+  // ===============================
   const [mostrarSelectorOdontologo, setMostrarSelectorOdontologo] = useState(false);
   const [modoSelectorOdontologo, setModoSelectorOdontologo] = useState<'nueva' | 'editar'>('nueva');
-
-  // Estados para el selector de pacientes
   const [mostrarSelectorPaciente, setMostrarSelectorPaciente] = useState(false);
   const [modoSelectorPaciente, setModoSelectorPaciente] = useState<'nueva' | 'editar'>('nueva');
 
-  // Lista de odontólogos disponibles
+  // Lista de odontólogos disponibles (puede ser reemplazada por una consulta a la API en el futuro)
   const odontologos = [
     'Carlos Mendoza',
     'María González',
@@ -67,7 +81,10 @@ export default function HomeScreen() {
     'Luis Martínez'
   ];
 
+  // ===============================
   // Estados para formularios
+  // ===============================
+  // Estado para el formulario de nuevo paciente
   const [nuevoPaciente, setNuevoPaciente] = useState({
     nombre: '',
     documento: '',
@@ -75,6 +92,7 @@ export default function HomeScreen() {
     correo: ''
   });
 
+  // Estado para el formulario de nueva cita
   const [nuevaCita, setNuevaCita] = useState({
     paciente_id: 0,
     fecha: '',
@@ -83,24 +101,29 @@ export default function HomeScreen() {
     estado: 'Pendiente'
   });
 
-  // Función para validar email
+  // ===============================
+  // Funciones utilitarias
+  // ===============================
+
+  // Valida si un email tiene formato correcto
   const validarEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Funciones para limpiar formularios
+  // Limpia el formulario de paciente y resetea el estado de edición
   const limpiarFormularioPaciente = () => {
     setNuevoPaciente({ nombre: '', documento: '', telefono: '', correo: '' });
     setEditandoPaciente(null);
   };
 
+  // Limpia el formulario de cita y resetea el estado de edición
   const limpiarFormularioCita = () => {
     setNuevaCita({ paciente_id: 0, fecha: '', hora: '', odontologo: '', estado: 'Pendiente' });
     setEditandoCita(null);
   };
 
-  // Funciones para el selector de fecha
+  // Formatea un objeto Date a string YYYY-MM-DD
   const formatearFecha = (fecha: Date) => {
     const año = fecha.getFullYear();
     const mes = String(fecha.getMonth() + 1).padStart(2, '0');
@@ -108,20 +131,24 @@ export default function HomeScreen() {
     return `${año}-${mes}-${dia}`;
   };
 
+  // Formatea un objeto Date a string HH:mm
   const formatearHora = (fecha: Date) => {
     const horas = String(fecha.getHours()).padStart(2, '0');
     const minutos = String(fecha.getMinutes()).padStart(2, '0');
     return `${horas}:${minutos}`;
   };
 
+  // ===============================
+  // Manejo de selección de fecha y hora
+  // ===============================
+
+  // Maneja el cambio de fecha en el DatePicker
   const manejarCambioFecha = (event: any, fechaSeleccionada?: Date) => {
     const fechaActual = fechaSeleccionada || new Date();
-    setMostrarDatePicker(false);
-    
-    if (event.type === 'set') {
+    setMostrarDatePicker(false); // Oculta el selector
+    if (event.type === 'set') { // Solo si el usuario confirma
       setFechaSeleccionada(fechaActual);
       const fechaFormateada = formatearFecha(fechaActual);
-      
       if (modoDatePicker === 'nueva') {
         setNuevaCita({ ...nuevaCita, fecha: fechaFormateada });
       } else if (editandoCita) {
@@ -130,13 +157,12 @@ export default function HomeScreen() {
     }
   };
 
+  // Maneja el cambio de hora en el TimePicker
   const manejarCambioHora = (event: any, fechaSeleccionada?: Date) => {
     const fechaActual = fechaSeleccionada || new Date();
     setMostrarTimePicker(false);
-    
     if (event.type === 'set') {
       const horaFormateada = formatearHora(fechaActual);
-      
       if (modoDatePicker === 'nueva') {
         setNuevaCita({ ...nuevaCita, hora: horaFormateada });
       } else if (editandoCita) {
@@ -145,11 +171,14 @@ export default function HomeScreen() {
     }
   };
 
-  // Cargar datos al iniciar
+  // ===============================
+  // Carga inicial de datos
+  // ===============================
   useEffect(() => {
     cargarDatos();
   }, []);
 
+  // Carga pacientes y citas desde la API
   const cargarDatos = async () => {
     setCargando(true);
     try {
@@ -166,18 +195,20 @@ export default function HomeScreen() {
     }
   };
 
-  // Funciones para pacientes
+  // ===============================
+  // Funciones CRUD para pacientes
+  // ===============================
+
+  // Crea un nuevo paciente
   const handleCrearPaciente = async () => {
     if (!nuevoPaciente.nombre || !nuevoPaciente.documento || !nuevoPaciente.telefono || !nuevoPaciente.correo) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
-
     if (!validarEmail(nuevoPaciente.correo)) {
       Alert.alert('Error', 'Por favor ingrese un correo electrónico válido');
       return;
     }
-
     const resultado = await crearPaciente(nuevoPaciente);
     if (resultado.success) {
       Alert.alert('Éxito', 'Paciente creado correctamente');
@@ -189,24 +220,22 @@ export default function HomeScreen() {
     }
   };
 
+  // Edita un paciente existente
   const handleEditarPaciente = async () => {
     if (!editandoPaciente || !editandoPaciente.nombre || !editandoPaciente.documento || !editandoPaciente.telefono || !editandoPaciente.correo) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
-
     if (!validarEmail(editandoPaciente.correo)) {
       Alert.alert('Error', 'Por favor ingrese un correo electrónico válido');
       return;
     }
-
     const resultado = await editarPaciente(editandoPaciente.id, {
       nombre: editandoPaciente.nombre,
       documento: editandoPaciente.documento,
       telefono: editandoPaciente.telefono,
       correo: editandoPaciente.correo
     });
-
     if (resultado.success) {
       Alert.alert('Éxito', 'Paciente editado correctamente');
       limpiarFormularioPaciente();
@@ -217,6 +246,7 @@ export default function HomeScreen() {
     }
   };
 
+  // Elimina un paciente (con confirmación)
   const handleEliminarPaciente = (id: number, nombre: string) => {
     Alert.alert(
       'Confirmar',
@@ -240,13 +270,16 @@ export default function HomeScreen() {
     );
   };
 
-  // Funciones para citas
+  // ===============================
+  // Funciones CRUD para citas
+  // ===============================
+
+  // Crea una nueva cita
   const handleCrearCita = async () => {
     if (!nuevaCita.paciente_id || nuevaCita.paciente_id <= 0 || !nuevaCita.fecha || !nuevaCita.hora || !nuevaCita.odontologo) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
-
     const resultado = await crearCita(nuevaCita);
     if (resultado.success) {
       Alert.alert('Éxito', 'Cita creada correctamente');
@@ -258,12 +291,12 @@ export default function HomeScreen() {
     }
   };
 
+  // Edita una cita existente
   const handleEditarCita = async () => {
     if (!editandoCita || !editandoCita.paciente_id || editandoCita.paciente_id <= 0 || !editandoCita.fecha || !editandoCita.hora || !editandoCita.odontologo) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
-
     const resultado = await editarCita(editandoCita.id, {
       paciente_id: editandoCita.paciente_id,
       fecha: editandoCita.fecha,
@@ -271,7 +304,6 @@ export default function HomeScreen() {
       odontologo: editandoCita.odontologo,
       estado: editandoCita.estado
     });
-
     if (resultado.success) {
       Alert.alert('Éxito', 'Cita editada correctamente');
       limpiarFormularioCita();
@@ -282,6 +314,7 @@ export default function HomeScreen() {
     }
   };
 
+  // Elimina una cita (con confirmación)
   const handleEliminarCita = (id: number) => {
     Alert.alert(
       'Confirmar',
@@ -305,6 +338,7 @@ export default function HomeScreen() {
     );
   };
 
+  // Cambia el estado de una cita (pendiente, completada, cancelada)
   const handleCambiarEstadoCita = async (id: number) => {
     const resultado = await cambiarEstadoCita(id);
     if (resultado.success) {
@@ -314,13 +348,15 @@ export default function HomeScreen() {
     }
   };
 
-  // Obtener nombre del paciente por ID
+  // Devuelve el nombre del paciente dado su ID
   const obtenerNombrePaciente = (id: number) => {
     const paciente = pacientes.find(p => p.id === id);
     return paciente ? paciente.nombre : 'Paciente no encontrado';
   };
 
-
+  // ===============================
+  // Renderizado principal
+  // ===============================
 
   return (
     <View style={styles.container}>
