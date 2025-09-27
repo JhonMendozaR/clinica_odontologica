@@ -353,22 +353,17 @@ export default function HomeScreen() {
         {pestañaActiva === 'pacientes' ? (
           <View style={styles.section}>
             {/* Botón Nuevo Paciente */}
-            <TouchableOpacity
-              style={styles.botonNuevo}
-              onPress={() => {
-                if (mostrarFormularioPaciente && !editandoPaciente) {
-                  limpiarFormularioPaciente();
-                  setMostrarFormularioPaciente(false);
-                } else {
+            {!mostrarFormularioPaciente && !editandoPaciente && (
+              <TouchableOpacity
+                style={styles.botonNuevo}
+                onPress={() => {
                   limpiarFormularioPaciente();
                   setMostrarFormularioPaciente(true);
-                }
-              }}
-            >
-              <Text style={styles.textoBotonNuevo}>
-                {mostrarFormularioPaciente && !editandoPaciente ? '- Cancelar' : '+ Nuevo Paciente'}
-              </Text>
-            </TouchableOpacity>
+                }}
+              >
+                <Text style={styles.textoBotonNuevo}>+ Nuevo Paciente</Text>
+              </TouchableOpacity>
+            )}
 
             {/* Formulario Nuevo Paciente */}
             {mostrarFormularioPaciente && !editandoPaciente && (
@@ -431,26 +426,28 @@ export default function HomeScreen() {
                         <Text style={styles.tarjetaId}>ID: {item.id}</Text>
                       </View>
                       <Text style={styles.titulo}>{item.nombre}</Text>
-                      <Text style={styles.detalle}>Documento: {item.documento}</Text>
-                      <Text style={styles.detalle}>Teléfono: {item.telefono}</Text>
-                      <Text style={styles.detalle}>Correo: {item.correo}</Text>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Documento:</Text>
+                        <Text style={styles.detalle}>{item.documento}</Text>
+                      </View>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Teléfono:</Text>
+                        <Text style={styles.detalle}>{item.telefono}</Text>
+                      </View>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Correo:</Text>
+                        <Text style={styles.detalle}>{item.correo}</Text>
+                      </View>
                       <View style={styles.botonesContainer}>
                         <TouchableOpacity
                           style={styles.botonEditar}
                           onPress={() => {
-                            if (editandoPaciente && editandoPaciente.id === item.id) {
-                              limpiarFormularioPaciente();
-                              setMostrarFormularioPaciente(false);
-                            } else {
-                              limpiarFormularioPaciente();
-                              setEditandoPaciente(item);
-                              setMostrarFormularioPaciente(false);
-                            }
+                            limpiarFormularioPaciente();
+                            setEditandoPaciente(item);
+                            setMostrarFormularioPaciente(false);
                           }}
                         >
-                          <Text style={styles.textoBotonEditar}>
-                            {editandoPaciente && editandoPaciente.id === item.id ? 'Cancelar' : 'Editar'}
-                          </Text>
+                          <Text style={styles.textoBotonEditar}>Editar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                           style={styles.botonEliminar}
@@ -521,22 +518,17 @@ export default function HomeScreen() {
         ) : (
           <View style={styles.section}>
             {/* Botón Nueva Cita */}
-            <TouchableOpacity
-              style={styles.botonNuevo}
-              onPress={() => {
-                if (mostrarFormularioCita && !editandoCita) {
-                  limpiarFormularioCita();
-                  setMostrarFormularioCita(false);
-                } else {
+            {!mostrarFormularioCita && !editandoCita && (
+              <TouchableOpacity
+                style={styles.botonNuevo}
+                onPress={() => {
                   limpiarFormularioCita();
                   setMostrarFormularioCita(true);
-                }
-              }}
-            >
-              <Text style={styles.textoBotonNuevo}>
-                {mostrarFormularioCita && !editandoCita ? '- Cancelar' : '+ Nueva Cita'}
-              </Text>
-            </TouchableOpacity>
+                }}
+              >
+                <Text style={styles.textoBotonNuevo}>+ Nueva Cita</Text>
+              </TouchableOpacity>
+            )}
 
             {/* Formulario Nueva Cita */}
             {mostrarFormularioCita && !editandoCita && (
@@ -629,29 +621,37 @@ export default function HomeScreen() {
                         <Text style={styles.tarjetaId}>ID: {item.id}</Text>
                       </View>
                       <Text style={styles.titulo}>{obtenerNombrePaciente(item.paciente_id)}</Text>
-                      <Text style={styles.detalle}>Fecha: {item.fecha}</Text>
-                      <Text style={styles.detalle}>Hora: {item.hora}</Text>
-                      <Text style={styles.detalle}>Odontólogo: {item.odontologo}</Text>
-                      <Text style={[styles.detalle, { fontWeight: 'bold' }]}>
-                        Estado: {item.estado}
-                      </Text>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Fecha:</Text>
+                        <Text style={styles.detalle}>{item.fecha}</Text>
+                      </View>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Hora:</Text>
+                        <Text style={styles.detalle}>{item.hora}</Text>
+                      </View>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Odontólogo:</Text>
+                        <Text style={styles.detalle}>{item.odontologo}</Text>
+                      </View>
+                      <View style={styles.detalleContainer}>
+                        <Text style={styles.detalleLabel}>Estado:</Text>
+                        <Text style={[styles.detalle, styles.estadoCita, { 
+                          color: item.estado === 'Completada' ? '#34a853' : 
+                                 item.estado === 'Cancelada' ? '#ea4335' : '#1a73e8' 
+                        }]}>
+                          {item.estado}
+                        </Text>
+                      </View>
                       <View style={styles.botonesContainer}>
                         <TouchableOpacity
                           style={styles.botonEditar}
                           onPress={() => {
-                            if (editandoCita && editandoCita.id === item.id) {
-                              limpiarFormularioCita();
-                              setMostrarFormularioCita(false);
-                            } else {
-                              limpiarFormularioCita();
-                              setEditandoCita(item);
-                              setMostrarFormularioCita(false);
-                            }
+                            limpiarFormularioCita();
+                            setEditandoCita(item);
+                            setMostrarFormularioCita(false);
                           }}
                         >
-                          <Text style={styles.textoBotonEditar}>
-                            {editandoCita && editandoCita.id === item.id ? 'Cancelar' : 'Editar'}
-                          </Text>
+                          <Text style={styles.textoBotonEditar}>Editar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                           style={styles.botonEstado}
@@ -879,309 +879,367 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fafbfc',
   },
   header: {
-    backgroundColor: '#2c3e50',
+    backgroundColor: '#ffffff',
     paddingTop: 50,
-    paddingBottom: 15,
-    paddingHorizontal: 15,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e8eaed',
   },
   tituloHeader: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#1a73e8',
     textAlign: 'center',
   },
   pestañas: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 16,
   },
   pestaña: {
     flex: 1,
-    paddingVertical: 15,
+    paddingVertical: 12,
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+    marginHorizontal: 4,
+    borderRadius: 24,
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
   },
   pestañaActiva: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#e8f0fe',
+    borderColor: '#1a73e8',
   },
   textoPestaña: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 15,
+    color: '#5f6368',
+    fontWeight: '500',
   },
   textoPestañaActiva: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#1a73e8',
+    fontWeight: '600',
   },
   contenido: {
     flex: 1,
-    padding: 15,
+    padding: 16,
+    paddingTop: 8,
   },
   section: {
     flex: 1,
   },
 
   cardHeader: {
-    backgroundColor: '#6c757d',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    backgroundColor: '#1a73e8',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: 'white',
   },
   cardBody: {
-    padding: 15,
+    padding: 20,
   },
   inputLabel: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 5,
-    marginTop: 5,
+    fontWeight: '500',
+    color: '#5f6368',
+    marginBottom: 8,
+    marginTop: 12,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 15,
+    borderColor: '#dadce0',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
     fontSize: 16,
     backgroundColor: 'white',
+    color: '#202124',
+    minHeight: 50,
   },
 
   picker: {
     justifyContent: 'center',
   },
   pickerText: {
-    color: '#333',
+    color: '#202124',
     fontSize: 16,
   },
   pickerPlaceholder: {
-    color: '#999',
+    color: '#9aa0a6',
     fontSize: 16,
   },
 
   buttonContainerVertical: {
-    marginTop: 10,
+    marginTop: 20,
+    gap: 12,
   },
   botonPrimario: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    backgroundColor: '#1a73e8',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 10,
+    elevation: 2,
+    shadowColor: '#1a73e8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   textoBotonPrimario: {
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: 16,
   },
   botonSecundario: {
-    backgroundColor: '#6c757d',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    backgroundColor: 'transparent',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#dadce0',
   },
   textoBotonSecundario: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#5f6368',
+    fontWeight: '500',
     fontSize: 16,
   },
   listContainer: {
     flex: 1,
   },
   tarjeta: {
-    backgroundColor: '#f8f9fa',
-    marginHorizontal: 15,
-    marginVertical: 5,
-    padding: 15,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: '#007bff',
+    backgroundColor: 'white',
+    marginHorizontal: 16,
+    marginVertical: 6,
+    padding: 16,
+    borderRadius: 12,
     elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    borderWidth: 1,
+    borderColor: '#f1f3f4',
   },
   tarjetaHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    alignItems: 'center',
+    marginBottom: 12,
   },
   tarjetaId: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: '#6c757d',
+    fontWeight: '500',
+    color: '#9aa0a6',
+    backgroundColor: '#f8f9fa',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
   },
   titulo: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#202124',
   },
   detalle: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 3,
+    color: '#202124',
+    marginBottom: 6,
+    lineHeight: 20,
+    flex: 1,
+  },
+  detalleContainer: {
+    flexDirection: 'row',
+    marginBottom: 6,
+    alignItems: 'center',
+  },
+  detalleLabel: {
+    fontSize: 14,
+    color: '#5f6368',
+    fontWeight: '500',
+    width: 80,
+    marginRight: 8,
+  },
+  estadoCita: {
+    fontWeight: '600',
+    fontSize: 14,
   },
   botonesContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginTop: 15,
+    marginTop: 16,
     gap: 8,
     flexWrap: 'wrap',
   },
   botonEditar: {
-    backgroundColor: '#007bff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  textoBotonEditar: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  botonEliminar: {
-    backgroundColor: '#dc3545',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  textoBotonEliminar: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  botonEstado: {
-    backgroundColor: '#28a745',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  textoBotonEstado: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  botonNuevo: {
-    backgroundColor: '#28a745',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 15,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: '#1a73e8',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    elevation: 1,
+    shadowColor: '#1a73e8',
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  textoBotonEditar: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 13,
+  },
+  botonEliminar: {
+    backgroundColor: '#ea4335',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    elevation: 1,
+    shadowColor: '#ea4335',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  textoBotonEliminar: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 13,
+  },
+  botonEstado: {
+    backgroundColor: '#34a853',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    elevation: 1,
+    shadowColor: '#34a853',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  textoBotonEstado: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 13,
+  },
+  botonNuevo: {
+    backgroundColor: '#1a73e8',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+    marginHorizontal: 16,
+    elevation: 2,
+    shadowColor: '#1a73e8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   textoBotonNuevo: {
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: 16,
   },
 
   formCardInline: {
     backgroundColor: 'white',
-    borderRadius: 8,
-    elevation: 2,
+    borderRadius: 12,
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
     shadowRadius: 2,
-    marginBottom: 15,
-    marginHorizontal: 15,
+    marginBottom: 16,
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#f1f3f4',
   },
   listCardFull: {
     backgroundColor: 'white',
-    borderRadius: 8,
-    elevation: 2,
+    borderRadius: 12,
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
     shadowRadius: 2,
     flex: 1,
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#f1f3f4',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   modalContainer: {
     backgroundColor: 'white',
-    borderRadius: 12,
-    width: '85%',
+    borderRadius: 16,
+    width: '100%',
     maxHeight: '70%',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    backgroundColor: '#1a73e8',
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: 'white',
   },
   modalCloseButton: {
-    padding: 5,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   modalCloseText: {
-    fontSize: 20,
+    fontSize: 16,
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   modalContent: {
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   modalOption: {
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
     borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
+    borderBottomColor: '#f1f3f4',
   },
   modalOptionText: {
     fontSize: 16,
-    color: '#333',
+    color: '#202124',
+    fontWeight: '500',
   },
   modalOptionPaciente: {
-    paddingVertical: 5,
+    paddingVertical: 4,
   },
   modalOptionSubText: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 2,
+    fontSize: 13,
+    color: '#5f6368',
+    marginTop: 4,
   },
 });
