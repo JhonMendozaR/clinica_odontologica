@@ -2,7 +2,7 @@ import axios from "axios";
 import Constants from "expo-constants";
 
 // Backup por defecto
-let API_API = "http://192.168.100.58/clinica_odontologica";
+let API_URL = "http://192.168.100.58/clinica_odontologica";
 
 try {
     // Para Expo SDK nuevo
@@ -13,14 +13,14 @@ try {
 
     if (debuggerHost) {
         const ip = debuggerHost.split(":").shift();
-        API_API = `http://${ip}/clinica_odontologica`;
+        API_URL = `http://${ip}/clinica_odontologica`;
     }
 } catch (e) {
     console.warn("No se pudo obtener la IP de Expo, usando valor por defecto");
 }
 
 const api = axios.create({
-    baseURL: API_API,
+    baseURL: API_URL,
     timeout: 10000,
     headers: { "Content-Type": "application/json" },
 });
@@ -41,7 +41,7 @@ export const obtenerPacientes = async () => {
 // Crear un nuevo paciente
 export const crearPaciente = async (pacienteData) => {
     try {
-        const { data } = await api.post('/Pacientes/crear_paciente.php', { pacienteData });
+        const { data } = await api.post('/Pacientes/crear_paciente.php', { paciente: pacienteData });
         return data;
     } catch (error) {
         console.error('Error al crear paciente:', error.message);
@@ -52,7 +52,8 @@ export const crearPaciente = async (pacienteData) => {
 // Editar un paciente existente
 export const editarPaciente = async (id, pacienteData) => {
     try {
-        const { data } = await api.put('/Pacientes/editar_paciente.php', { id, pacienteData });
+        const actualizarPaciente = { id, ...pacienteData };
+        const { data } = await api.put('/Pacientes/editar_paciente.php', actualizarPaciente);
         return data;
     } catch (error) {
         console.error('Error al editar paciente:', error.message);
@@ -63,7 +64,7 @@ export const editarPaciente = async (id, pacienteData) => {
 // Eliminar un paciente 
 export const eliminarPaciente = async (id) => {
     try {
-        const { data } = await api.delete('/Pacientes/eliminar_paciente.php', { id });
+        const { data } = await api.delete('/Pacientes/eliminar_paciente.php', { data: { id } });
         return data;
     } catch (error) {
         console.error('Error al eliminar paciente:', error.message);
@@ -77,17 +78,17 @@ export const eliminarPaciente = async (id) => {
 export const obtenerCitas = async () => {
     try {
         const { data } = await api.get('/Citas/leer_cita.php');
-        return data;
+        return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Error al obtener citas:', error.message);
-        return { success: false, message: 'No se pudieron obtener las citas' };
+        return [];
     }
 };
 
 // Crear una nueva cita
 export const crearCita = async (citaData) => {
     try {
-        const { data } = await api.post('/Citas/crear_cita.php', { citaData });
+        const { data } = await api.post('/Citas/crear_cita.php', { cita: citaData });
         return data;
     } catch (error) {
         console.error('Error al crear cita:', error.message);
@@ -98,7 +99,8 @@ export const crearCita = async (citaData) => {
 // Editar una cita existente
 export const editarCita = async (id, citaData) => {
     try {
-        const { data } = await api.post('/Citas/editar_cita.php', { id, citaData });
+        const datosParaEnviar = { id, ...citaData };
+        const { data } = await api.put('/Citas/editar_cita.php', datosParaEnviar);
         return data;
     } catch (error) {
         console.error('Error al editar cita:', error.message);
@@ -109,7 +111,7 @@ export const editarCita = async (id, citaData) => {
 // Eliminar una cita
 export const eliminarCita = async (id) => {
     try {
-        const { data } = await api.post('/Citas/eliminar_cita.php', { id });
+        const { data } = await api.delete('/Citas/eliminar_cita.php', { data: { id } });
         return data;
     } catch (error) {
         console.error('Error al eliminar cita:', error.message);
@@ -117,83 +119,16 @@ export const eliminarCita = async (id) => {
     }
 };
 
-// // ========== FUNCIONES AUXILIARES ==========
-
-// // Obtener un paciente por ID
-// export const obtenerPacientePorId = async (id) => {
-//     try {
-//         const pacientes = await obtenerPacientes();
-//         return pacientes.find(paciente => paciente.id === id);
-//     } catch (error) {
-//         console.error('Error al obtener paciente por ID:', error);
-//         throw error;
-//     }
-// };
-
-// // Obtener una cita por ID
-// export const obtenerCitaPorId = async (id) => {
-//     try {
-//         const citas = await obtenerCitas();
-//         return citas.find(cita => cita.id === id);
-//     } catch (error) {
-//         console.error('Error al obtener cita por ID:', error);
-//         throw error;
-//     }
-// };
-
-// // Obtener citas de un paciente específico
-// export const obtenerCitasPorPaciente = async (pacienteId) => {
-//     try {
-//         const citas = await obtenerCitas();
-//         return citas.filter(cita => cita.paciente_id === pacienteId);
-//     } catch (error) {
-//         console.error('Error al obtener citas por paciente:', error);
-//         throw error;
-//     }
-// };
-
-// // Obtener citas por estado
-// export const obtenerCitasPorEstado = async (estado) => {
-//     try {
-//         const citas = await obtenerCitas();
-//         return citas.filter(cita => cita.estado === estado);
-//     } catch (error) {
-//         console.error('Error al obtener citas por estado:', error);
-//         throw error;
-//     }
-// };
-
-// // Obtener citas por fecha
-// export const obtenerCitasPorFecha = async (fecha) => {
-//     try {
-//         const citas = await obtenerCitas();
-//         return citas.filter(cita => cita.fecha === fecha);
-//     } catch (error) {
-//         console.error('Error al obtener citas por fecha:', error);
-//         throw error;
-//     }
-// };
-
-// // Validar disponibilidad de horario
-// export const validarDisponibilidadHorario = async (fecha, hora, odontologoId = null) => {
-//     try {
-//         const citas = await obtenerCitas();
-//         const citasEnFecha = citas.filter(cita => 
-//             cita.fecha === fecha && 
-//             cita.hora === hora && 
-//             cita.estado !== 'Cancelada'
-//         );
-        
-//         if (odontologoId) {
-//             return citasEnFecha.filter(cita => cita.odontologo === odontologoId).length === 0;
-//         }
-        
-//         return citasEnFecha.length === 0;
-//     } catch (error) {
-//         console.error('Error al validar disponibilidad:', error);
-//         throw error;
-//     }
-// };
+// Cambiar estado de una cita (cíclico: pendiente → confirmada → cancelada → pendiente)
+export const cambiarEstadoCita = async (id) => {
+    try {
+        const { data } = await api.put('/Citas/cambiar_estado_cita.php', { id });
+        return data;
+    } catch (error) {
+        console.error('Error al cambiar estado de la cita:', error.message);
+        return { success: false, message: 'No se pudo cambiar el estado de la cita' };
+    }
+};
 
 // Exportar la instancia de axios por defecto
 export default {
