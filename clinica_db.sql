@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-09-2025 a las 18:20:54
+-- Tiempo de generación: 27-09-2025 a las 22:27:03
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -33,7 +33,7 @@ CREATE TABLE `citas` (
   `fecha` date DEFAULT NULL,
   `hora` time DEFAULT NULL,
   `odontologo` varchar(100) DEFAULT NULL,
-  `estado` enum('Pendiente','Confirmada','Cancelada') DEFAULT 'Pendiente'
+  `estado` enum('pendiente','confirmada','cancelada') DEFAULT 'pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -49,6 +49,14 @@ CREATE TABLE `pacientes` (
   `telefono` varchar(20) DEFAULT NULL,
   `correo` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pacientes`
+--
+
+INSERT INTO `pacientes` (`id`, `nombre`, `documento`, `telefono`, `correo`) VALUES
+(36, 'Jhon Alexis Mendoza Rojas', '10222000', '3133300000', 'jhon99mendoza@gmail.com'),
+(38, 'Andres', '1022495050', '31350506', 'Andres@correo.com');
 
 --
 -- Índices para tablas volcadas
@@ -75,13 +83,13 @@ ALTER TABLE `pacientes`
 -- AUTO_INCREMENT de la tabla `citas`
 --
 ALTER TABLE `citas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Restricciones para tablas volcadas
