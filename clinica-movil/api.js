@@ -2,7 +2,8 @@ import axios from "axios";
 import Constants from "expo-constants";
 
 // Backup por defecto
-let API_URL = "http://192.168.100.58/clinica_odontologica";
+// let API_URL = "http://192.168.100.58/clinica_odontologica";
+let API_URL = "http://10.143.37.157/clinica_odontologica";
 
 try {
     // Para Expo SDK nuevo
