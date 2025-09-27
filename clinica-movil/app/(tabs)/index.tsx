@@ -268,7 +268,8 @@ export default function HomeScreen() {
       paciente_id: editandoCita.paciente_id,
       fecha: editandoCita.fecha,
       hora: editandoCita.hora,
-      odontologo: editandoCita.odontologo
+      odontologo: editandoCita.odontologo,
+      estado: editandoCita.estado
     });
 
     if (resultado.success) {

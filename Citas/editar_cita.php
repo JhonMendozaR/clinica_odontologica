@@ -10,7 +10,7 @@ header("Content-Type: application/json; charset=UTF-8");
 // Actualizar citas
 $actualizarDatos = json_decode(file_get_contents('php://input'), true);
 $id = intval($actualizarDatos['id']);
-$pacienteId = trim($actualizarDatos['paciente_id'] ?? '');
+$pacienteId = intval($actualizarDatos['paciente_id'] ?? '');
 $fecha = trim($actualizarDatos['fecha'] ?? '');
 $hora = trim($actualizarDatos['hora'] ?? '');
 $odontologo = trim($actualizarDatos['odontologo'] ?? '');
