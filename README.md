@@ -211,55 +211,28 @@ Notas:
 
 ## Diagrama de flujo (paciente → cita)
 
-```mermaid
-flowchart LR
-  U[Usuario] --> W[Web (index.html) o App móvil (Expo)]
-  W -->|fetch/axios| API[API PHP en Apache]
-  API <-->|mysqli| DB[(MySQL: clinica_db)]
-
-  subgraph Pacientes
-    L1[GET /Pacientes/leer_paciente.php]
-    C1[POST /Pacientes/crear_paciente.php]
-    E1[PUT /Pacientes/editar_paciente.php]
-    D1[DELETE /Pacientes/eliminar_paciente.php]
-  end
-
-  subgraph Citas
-    L2[GET /Citas/leer_cita.php]
-    C2[POST /Citas/crear_cita.php]
-    E2[PUT /Citas/editar_cita.php]
-    D2[DELETE /Citas/eliminar_cita.php]
-    S2[PUT /Citas/cambiar_estado_cita.php\n(pendiente → confirmada → cancelada)]
-  end
-
-  W --> L1
-  W --> C1
-  W --> E1
-  W --> D1
-  W --> L2
-  W --> C2
-  W --> E2
-  W --> D2
-  W --> S2
-```
-
-Fallback ASCII:
+Diagrama en texto (compatible con cualquier visor):
 
 ```
-Usuario
-   |
-   v
-Web (index.html) / App (Expo)
-   |
-   |  fetch / axios
-   v
-API PHP (Apache)  <-->  MySQL (clinica_db)
+   ┌───────────┐        ┌───────────────────────────────┐        ┌───────────────┐        ┌───────────────────────┐
+   │  Usuario  │  →→→   │ Web (index.html) / App (Expo) │  →→→   │  API PHP      │  ↔↔↔   │   MySQL (clinica_db)   │
+   └───────────┘        └───────────────────────────────┘        └───────────────┘        └───────────────────────┘
+                                  │                                        │                           │
+                                  │  fetch / axios (JSON)                  │ mysqli                    │
+                                  ▼                                        ▼                           ▼
+
+  Endpoints Pacientes:                         Endpoints Citas:
+  - GET    /Pacientes/leer_paciente.php        - GET    /Citas/leer_cita.php
+  - POST   /Pacientes/crear_paciente.php       - POST   /Citas/crear_cita.php
+  - PUT    /Pacientes/editar_paciente.php      - PUT    /Citas/editar_cita.php
+  - DELETE /Pacientes/eliminar_paciente.php    - DELETE /Citas/eliminar_cita.php
+                                               - PUT    /Citas/cambiar_estado_cita.php
 
 Flujo típico:
-1. Crear Paciente  -> POST /Pacientes/crear_paciente.php
-2. Crear Cita      -> POST /Citas/crear_cita.php (usa paciente_id)
-3. Editar/Eliminar -> PUT/DELETE en Pacientes y Citas
-4. Cambiar Estado  -> PUT /Citas/cambiar_estado_cita.php
+1) Crear Paciente  → POST /Pacientes/crear_paciente.php
+2) Crear Cita      → POST /Citas/crear_cita.php (usa paciente_id)
+3) Editar/Eliminar → PUT/DELETE en Pacientes y Citas
+4) Cambiar Estado  → PUT /Citas/cambiar_estado_cita.php (pendiente → confirmada → cancelada → pendiente)
 ```
 
 ---
@@ -299,6 +272,4 @@ Flujo típico:
 
 ---
 
-## Licencia
-
-No especificada. Agrega aquí la licencia de tu preferencia (por ejemplo, MIT) o las condiciones de uso.
+**Desarrollador fullstack**: Jhon Mendoza
