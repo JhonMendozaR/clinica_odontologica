@@ -1,11 +1,7 @@
-
-// ===============================
 // Configuración de la URL base de la API
-// ===============================
 import axios from "axios";
 import Constants from "expo-constants";
 
-// Backup por defecto
 // let API_URL = "http://192.168.100.58/clinica_odontologica";
 let API_URL = "http://10.143.37.157/clinica_odontologica";
 
@@ -28,9 +24,7 @@ try {
 }
 
 
-// ===============================
 // Instancia de axios configurada para la API
-// ===============================
 const api = axios.create({
     baseURL: API_URL,
     timeout: 10000,
@@ -38,9 +32,7 @@ const api = axios.create({
 });
 
 
-// ===============================
 // FUNCIONES PARA PACIENTES
-// ===============================
 
 
 // Obtener todos los pacientes
@@ -95,9 +87,7 @@ export const eliminarPaciente = async (id) => {
 };
 
 
-// ===============================
 // FUNCIONES PARA CITAS
-// ===============================
 
 
 // Obtener todas las citas
@@ -165,9 +155,7 @@ export const cambiarEstadoCita = async (id) => {
 };
 
 
-// ===============================
 // Exportar todas las funciones de la API
-// ===============================
 export default {
     obtenerPacientes,
     crearPaciente,

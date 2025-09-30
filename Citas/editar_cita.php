@@ -9,9 +9,9 @@ header("Content-Type: application/json; charset=UTF-8");
 
 // Actualizar citas
 $actualizarDatos = json_decode(file_get_contents('php://input'), true);
-$id = intval($actualizarDatos['id']);
+$id = intval($actualizarDatos['id']); // Asegura que el ID sea un entero
 $pacienteId = intval($actualizarDatos['paciente_id'] ?? '');
-$fecha = trim($actualizarDatos['fecha'] ?? '');
+$fecha = trim($actualizarDatos['fecha'] ?? ''); // Elimina espacios en blanco
 $hora = trim($actualizarDatos['hora'] ?? '');
 $odontologo = trim($actualizarDatos['odontologo'] ?? '');
 $estado = trim($actualizarDatos['estado'] ?? '');

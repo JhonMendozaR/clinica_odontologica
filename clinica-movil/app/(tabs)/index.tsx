@@ -35,9 +35,8 @@ interface Cita {
 }
 
 export default function HomeScreen() {
-  // ===============================
-  // Estados principales de la pantalla
-  // ===============================
+
+  // ESTADOS PRINCIPALES DE LA PANTALLA
 
   // Estado para manejar la pestaña activa ("pacientes" o "citas")
   const [pestañaActiva, setPestañaActiva] = useState<'pacientes' | 'citas'>('pacientes');
@@ -55,18 +54,18 @@ export default function HomeScreen() {
   const [mostrarFormularioPaciente, setMostrarFormularioPaciente] = useState(false);
   const [mostrarFormularioCita, setMostrarFormularioCita] = useState(false);
 
-  // ===============================
-  // Estados para selección de fecha y hora
-  // ===============================
+
+  // SELECCION DE FECHA Y HORA
+
   const [mostrarDatePicker, setMostrarDatePicker] = useState(false);
   const [mostrarTimePicker, setMostrarTimePicker] = useState(false);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
   // modoDatePicker indica si el selector es para nueva cita o edición
   const [modoDatePicker, setModoDatePicker] = useState<'nueva' | 'editar'>('nueva');
 
-  // ===============================
-  // Estados para selectores de odontólogo y paciente
-  // ===============================
+
+  // SELECTORES DE ODONTOLOGO Y PACIENTE
+
   const [mostrarSelectorOdontologo, setMostrarSelectorOdontologo] = useState(false);
   const [modoSelectorOdontologo, setModoSelectorOdontologo] = useState<'nueva' | 'editar'>('nueva');
   const [mostrarSelectorPaciente, setMostrarSelectorPaciente] = useState(false);
@@ -81,9 +80,9 @@ export default function HomeScreen() {
     'Luis Martínez'
   ];
 
-  // ===============================
-  // Estados para formularios
-  // ===============================
+
+  // FORMULARIOS
+
   // Estado para el formulario de nuevo paciente
   const [nuevoPaciente, setNuevoPaciente] = useState({
     nombre: '',
@@ -101,9 +100,8 @@ export default function HomeScreen() {
     estado: 'Pendiente'
   });
 
-  // ===============================
-  // Funciones utilitarias
-  // ===============================
+
+  // OTRAS FUNCIONES
 
   // Valida si un email tiene formato correcto
   const validarEmail = (email: string) => {
@@ -138,9 +136,7 @@ export default function HomeScreen() {
     return `${horas}:${minutos}`;
   };
 
-  // ===============================
   // Manejo de selección de fecha y hora
-  // ===============================
 
   // Maneja el cambio de fecha en el DatePicker
   const manejarCambioFecha = (event: any, fechaSeleccionada?: Date) => {
@@ -171,9 +167,9 @@ export default function HomeScreen() {
     }
   };
 
-  // ===============================
+
   // Carga inicial de datos
-  // ===============================
+
   useEffect(() => {
     cargarDatos();
   }, []);
@@ -195,9 +191,8 @@ export default function HomeScreen() {
     }
   };
 
-  // ===============================
+
   // Funciones CRUD para pacientes
-  // ===============================
 
   // Crea un nuevo paciente
   const handleCrearPaciente = async () => {
@@ -270,9 +265,8 @@ export default function HomeScreen() {
     );
   };
 
-  // ===============================
+
   // Funciones CRUD para citas
-  // ===============================
 
   // Crea una nueva cita
   const handleCrearCita = async () => {
@@ -354,10 +348,9 @@ export default function HomeScreen() {
     return paciente ? paciente.nombre : 'Paciente no encontrado';
   };
 
-  // ===============================
-  // Renderizado principal
-  // ===============================
 
+  // Renderizado principal
+  
   return (
     <View style={styles.container}>
       {/* Header */}

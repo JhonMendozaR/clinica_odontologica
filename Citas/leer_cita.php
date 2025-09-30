@@ -14,7 +14,7 @@ if($resultado) {
     while ($fila = $resultado->fetch_assoc()) {
         $listarcitas [] = $fila;
     }
-    echo json_encode($listarcitas, JSON_UNESCAPED_UNICODE);
+    echo json_encode($listarcitas, JSON_UNESCAPED_UNICODE); // caracteres especiales
 } else {
     echo json_encode([
         'success' => false,
